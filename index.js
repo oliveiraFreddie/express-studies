@@ -1,9 +1,34 @@
 const express = require('express')
 const app = express()
 
-app.use('/opa', (req, res, next) => {
+const saudacao = require('./saudacaoMid')
+
+app.use(saudacao('Gilherme'))
+
+app.use((req, res, next) => {
   console.log('Antes...')
   next()
+})
+
+app.post('/clientes/relatorio', (req, res) => {
+  res.send(
+    `Cliente relatório: completo = ${req.query.completo} ano = ${req.query.ano}`
+  )
+})
+
+app.post('/corpo', (req, res) => {
+  let corpo = ''
+  req.on('data', function (parte) {
+    corpo += parte
+  })
+
+  req.on('end', function () {
+    res.send(corpo)
+  })
+})
+
+app.get('/clientes/:id', (req, res) => {
+  res.send(`Cliente ${req.params.id} selecionado!`)
 })
 
 app.get('/opa', (req, res, next) => {
